@@ -76,7 +76,10 @@ nfa-standard/
 │   │   ├── INFA1Payment.sol # Optional: withdrawals
 │   │   └── ...              # 5 more optional extensions
 │   ├── examples/
-│   │   └── MinimalNFA.sol   # Reference implementation (Tier 1-3)
+│   │   ├── MinimalNFA.sol              # Reference implementation (Tier 1-3)
+│   │   ├── MinimalNFAUpgradeable.sol   # UUPS upgradeable version
+│   │   ├── MyAgent.sol                 # Deployment template (fork this!)
+│   │   └── MyAgentUpgradeable.sol      # Upgradeable template (production)
 │   └── tools/
 │       └── NFA1Verifier.sol # On-chain compliance checker
 ├── test/                    # Foundry tests (130 unit + fuzz + invariant + gas)
@@ -87,7 +90,8 @@ nfa-standard/
 ├── tools/
 │   └── nfa1-audit.js        # Off-chain audit script
 ├── script/
-│   └── Deploy.s.sol         # Deployment script with self-verification
+│   ├── Deploy.s.sol                # Simple deployment (non-upgradeable)
+│   └── DeployUpgradeable.s.sol     # UUPS proxy deployment (upgradeable)
 ├── QUICKSTART.md            # Developer quick start guide
 └── ORIGIN.md                # Origin and methodology
 ```

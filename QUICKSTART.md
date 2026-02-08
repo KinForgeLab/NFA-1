@@ -75,7 +75,29 @@ That's it. The template inherits MinimalNFA (Tier 1-3 compliant) and adds:
 - Withdraw function
 - Mint toggle (open/close)
 
-### Option B: Extend MinimalNFA directly
+### Option B: Use the upgradeable template (recommended for production)
+
+If you need to upgrade your contract after deployment (fix bugs, add features),
+use `MyAgentUpgradeable.sol` instead — same TODO markers, but with UUPS proxy:
+
+```solidity
+contract MyAgentUpgradeable is MinimalNFAUpgradeable {
+    // Same TODO markers as MyAgent.sol
+    // Deployed via ERC1967Proxy — owner can upgrade later
+}
+```
+
+Deploy with the upgradeable script:
+
+```bash
+forge script script/DeployUpgradeable.s.sol --rpc-url <RPC> --broadcast
+```
+
+To upgrade later:
+1. Deploy new implementation: `forge create MyAgentUpgradeableV2 ...`
+2. Call proxy: `cast send <PROXY> "upgradeToAndCall(address,bytes)" <NEW_IMPL> 0x ...`
+
+### Option C: Extend MinimalNFA directly
 
 For more control, inherit MinimalNFA and add your own logic:
 
@@ -87,7 +109,7 @@ contract CustomAgent is MinimalNFA {
 }
 ```
 
-### Option C: Implement INFA1Core from scratch
+### Option D: Implement INFA1Core from scratch
 
 ```solidity
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
