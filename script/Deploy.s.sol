@@ -2,10 +2,10 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "../contracts/examples/MinimalNFA.sol";
+import "../contracts/examples/MyAgent.sol";
 import "../contracts/tools/NFA1Verifier.sol";
 
-/// @title Deploy — Deploy MinimalNFA + NFA1Verifier
+/// @title Deploy — Deploy MyAgent + NFA1Verifier
 /// @notice Usage:
 ///   # Testnet (BSC Testnet):
 ///   forge script script/Deploy.s.sol --rpc-url https://data-seed-prebsc-1-s1.binance.org:8545 --broadcast --verify
@@ -28,9 +28,9 @@ contract DeployScript is Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        // 1. Deploy MinimalNFA
-        MinimalNFA nfa = new MinimalNFA();
-        console.log("MinimalNFA deployed at:", address(nfa));
+        // 1. Deploy MyAgent (inherits MinimalNFA — Tier 1-3 compliant)
+        MyAgent nfa = new MyAgent();
+        console.log("MyAgent deployed at:", address(nfa));
 
         // 2. Deploy NFA1Verifier
         NFA1Verifier verifier = new NFA1Verifier();
@@ -44,14 +44,23 @@ contract DeployScript is Script {
         require(isNFA, "FATAL: Deployed contract failed NFA-1 self-check");
         require(tier == 3, "FATAL: Expected Tier 3 compliance");
 
+        // 4. Open minting (optional — remove if you want to open later)
+        nfa.setMintOpen(true);
+        console.log("Minting: OPEN");
+
         vm.stopBroadcast();
 
         console.log("");
         console.log("=== Deployment Summary ===");
-        console.log("MinimalNFA:    ", address(nfa));
+        console.log("MyAgent:       ", address(nfa));
         console.log("NFA1Verifier:  ", address(verifier));
         console.log("INFA1Core ID:  ");
         console.logBytes4(verifier.INFA1CORE_ID());
         console.log("Compliance:     Tier 3 (VERIFIED)");
+        console.log("");
+        console.log("Next steps:");
+        console.log("  1. Verify on BscScan: forge verify-contract <ADDRESS> MyAgent --chain bsc");
+        console.log("  2. Mint your first agent via publicMint() or ownerMint()");
+        console.log("  3. Set up your off-chain vault and learning backend");
     }
 }

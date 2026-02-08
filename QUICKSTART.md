@@ -10,8 +10,8 @@ Build your first NFA-1 compliant Non-Fungible Agent in under 10 minutes.
 ## 1. Clone & Install
 
 ```bash
-git clone https://github.com/KinForgeLab/nfa-standard.git
-cd nfa-standard
+git clone https://github.com/KinForgeLab/NFA-1.git
+cd NFA-1
 forge install
 forge build
 ```
@@ -49,42 +49,51 @@ Your NFA Contract
 
 ## 4. Build Your Own NFA
 
-### Option A: Extend MinimalNFA (fastest)
+### Option A: Use the MyAgent template (fastest — recommended)
 
-Copy `contracts/examples/MinimalNFA.sol` and add your custom logic:
+Edit `contracts/examples/MyAgent.sol` — search for `TODO` comments and customize:
 
 ```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+contract MyAgent is MinimalNFA, Ownable {
 
-import "../examples/MinimalNFA.sol";
+    // ====================== TODO: CUSTOMIZE THESE ======================
 
-contract MyAgent is MinimalNFA {
-    // Add access control, payment, custom minting logic, etc.
+    string private constant NAME = "My NFA Collection";  // TODO: Change this
+    string private constant SYMBOL = "MNFA";              // TODO: Change this
+    uint256 public constant MAX_SUPPLY = 10_000;          // TODO: Change this
+    uint256 public constant MINT_PRICE = 0.01 ether;      // TODO: Change this
+    uint256 public constant MAX_PER_WALLET = 5;            // TODO: Change this
 
-    uint256 public maxSupply = 10000;
-
-    function mintWithLimit(
-        address to,
-        AgentMetadata calldata metadata
-    ) external returns (uint256) {
-        require(_nextTokenId <= maxSupply, "Max supply reached");
-        return mint(to, metadata, true);
-    }
+    // ... publicMint, ownerMint, withdraw already included
 }
 ```
 
-### Option B: Implement INFA1Core from scratch
+That's it. The template inherits MinimalNFA (Tier 1-3 compliant) and adds:
+- Ownable access control
+- Public mint with price, supply cap, and per-wallet limit
+- Owner mint (free, for airdrops/team)
+- Withdraw function
+- Mint toggle (open/close)
+
+### Option B: Extend MinimalNFA directly
+
+For more control, inherit MinimalNFA and add your own logic:
 
 ```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+import "./MinimalNFA.sol";
 
+contract CustomAgent is MinimalNFA {
+    // Add your own minting, access control, extensions, etc.
+}
+```
+
+### Option C: Implement INFA1Core from scratch
+
+```solidity
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
 import "../interfaces/INFA1Core.sol";
 
-contract ProductionNFA is ERC721, AccessControl, INFA1Core {
+contract ProductionNFA is ERC721, INFA1Core {
     // Implement all 15 INFA1Core functions
     // See MinimalNFA.sol for reference implementation
 }
@@ -130,7 +139,10 @@ export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f
 forge script script/Deploy.s.sol --rpc-url http://localhost:8545 --broadcast
 ```
 
-The deploy script automatically runs a self-verification check using NFA1Verifier.
+The deploy script automatically:
+1. Deploys your MyAgent contract + NFA1Verifier
+2. Runs a self-verification check (must pass Tier 3)
+3. Opens minting (remove `nfa.setMintOpen(true)` in Deploy.s.sol if you want to open later)
 
 ## 7. Verify Compliance
 
@@ -172,7 +184,8 @@ nfa-standard/
 │   │   ├── INFA1Payment.sol # Optional: withdrawals
 │   │   └── ...              # 5 more optional extensions
 │   ├── examples/
-│   │   └── MinimalNFA.sol   # Reference implementation (Tier 1-3)
+│   │   ├── MinimalNFA.sol   # Reference implementation (Tier 1-3)
+│   │   └── MyAgent.sol      # Deployment template (fork this!)
 │   └── tools/
 │       └── NFA1Verifier.sol # On-chain compliance checker
 ├── test/                    # Foundry tests (130 total)
