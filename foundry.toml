@@ -1,0 +1,17 @@
+[profile.default]
+src = "contracts"
+out = "out"
+libs = ["lib"]
+test = "test"
+solc_version = "0.8.24"
+optimizer = true
+optimizer_runs = 200
+gas_reports = ["MinimalNFA"]
+
+[profile.default.fuzz]
+runs = 512
+max_test_rejects = 65536
+
+[profile.default.invariant]
+runs = 128
+depth = 64
