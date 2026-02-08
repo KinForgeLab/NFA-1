@@ -19,7 +19,19 @@ NFA-1 extends ERC-721 with lifecycle management, on-chain learning commitments, 
 - **Hybrid storage model** — On-chain hashes anchor off-chain data (80-90% gas savings)
 - **7 optional extensions** — Lineage, Payment, Identity, Receipts, Compliance, Learning Modules, Circuit Breaker
 - **Built-in verification tools** — On-chain `NFA1Verifier.sol` + off-chain `nfa1-audit.js`
-- **Formal verification** — 15 symbolic proofs via Halmos + 130 Foundry tests
+- **Formal verification** — 15 symbolic proofs via Halmos + 174 Foundry tests
+
+## Use Cases
+
+- **AI Companion NFTs** — Mint agents with unique personas that learn and evolve through user interaction; personality and memory persist on-chain across owners
+- **Autonomous Trading Agents** — Deploy on-chain agents that execute strategies via `executeAction`, with built-in gas capping and circuit breaker for risk control
+- **GameFi / Metaverse NPCs** — Create tradeable game characters whose skills, experience, and behavioral data are verifiably committed on-chain via Merkle roots
+- **DAO Agents** — Govern treasury or execute proposals through delegated logic contracts; lifecycle controls (pause/terminate) provide emergency safeguards
+- **Agent Marketplaces** — Standard ERC-721 compatibility enables trading on any NFT marketplace while preserving agent state, learning history, and lineage
+- **Cross-platform Agent Identity** — Bridge agent identity to off-chain services via `INFA1Identity` (ERC-8004); one on-chain NFT anchors a portable AI identity
+- **Enterprise AI Compliance** — `INFA1Compliance` and `INFA1Receipts` extensions provide auditable metadata and action trails for regulated environments
+
+NFA-1 solves a fundamental problem: **AI agents today are stateless, non-portable, and platform-locked.** By anchoring agent state, learning, and identity as transferable on-chain assets, NFA-1 makes AI agents ownable, composable, and interoperable across any EVM chain.
 
 ## Quick Start
 
@@ -28,7 +40,7 @@ git clone https://github.com/KinForgeLab/NFA-1.git
 cd NFA-1
 forge install
 forge build
-forge test  # 130 tests: unit + fuzz + invariant + gas + verifier
+forge test  # 174 tests: unit + fuzz + invariant + gas + verifier + upgradeable
 ```
 
 See [QUICKSTART.md](QUICKSTART.md) for a full developer walkthrough.
@@ -82,7 +94,7 @@ nfa-standard/
 │   │   └── MyAgentUpgradeable.sol      # Upgradeable template (production)
 │   └── tools/
 │       └── NFA1Verifier.sol # On-chain compliance checker
-├── test/                    # Foundry tests (130 unit + fuzz + invariant + gas)
+├── test/                    # Foundry tests (174 unit + fuzz + invariant + gas + upgradeable)
 │   └── MinimalNFA.halmos.t.sol  # 15 Halmos symbolic proofs
 ├── spec/                    # NFA-1 specification (EN + 中文)
 ├── checklist/               # Compliance checklist (69 items)
